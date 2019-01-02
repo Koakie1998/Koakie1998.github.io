@@ -1960,7 +1960,7 @@ pre .javascript .function {
   width: 4px;
   height: 4px;
   border-radius: 50%;
-  background: #f4fa99;
+  background: #402225;
 }
 .links-of-blogroll {
   font-size: 13px;
@@ -2090,10 +2090,13 @@ pre .javascript .function {
 .footer-inner {
   text-align: center;
 }
+#animate {
+  animation: iconAnimate 1.33s ease-in-out infinite;
+}
 .with-love {
   display: inline-block;
   margin: 0 5px;
-  color: #808080;
+  color: #1183e8;
 }
 .powered-by,
 .theme-info {
