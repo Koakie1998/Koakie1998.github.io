@@ -1,5 +1,18 @@
 /* global NexT, CONFIG */
-
+window.onload=function(){
+    var bwol=document.body.offsetWidth;
+    if(bwol < 975){
+        $('aside#sidebar').css("display","none");
+        $('body').css("paddingLeft","0px");
+    }
+}
+window.onresize = function(){
+    var bwos=document.body.offsetWidth;
+    bwos < 975 && $('body').velocity('stop').velocity({paddingLeft: 0},0);
+    if($('aside#sidebar').css('display') != 'none' && $('aside#sidebar').css('width')!='0px')
+        $('body').velocity('stop').velocity({paddingLeft: 350},0);
+}
+//上面是修补侧边BUG 
 $(document).ready(function() {
   NexT.motion = {};
 
@@ -98,7 +111,7 @@ $(document).ready(function() {
       $(document)
         .on('sidebar.isShowing', function() {
           NexT.utils.isDesktop() && $('body').velocity('stop').velocity(
-            {paddingRight: SIDEBAR_WIDTH},
+            {paddingLeft: SIDEBAR_WIDTH},
             SIDEBAR_DISPLAY_DURATION
           );
         })
@@ -158,13 +171,12 @@ $(document).ready(function() {
           self.sidebarEl.addClass('sidebar-active');
           self.sidebarEl.trigger('sidebar.didShow');
         }
-      }
-      );
+      });
 
       this.sidebarEl.trigger('sidebar.isShowing');
     },
     hideSidebar: function() {
-      NexT.utils.isDesktop() && $('body').velocity('stop').velocity({paddingRight: 0});
+      NexT.utils.isDesktop() && $('body').velocity('stop').velocity({paddingLeft: 0});
       this.sidebarEl.find('.motion-element').velocity('stop').css('display', 'none');
       this.sidebarEl.velocity('stop').velocity({width: 0}, {display: 'none'});
 
@@ -206,6 +218,7 @@ $(document).ready(function() {
     logo: function(integrator) {
       var sequence = [];
       var $brand = $('.brand');
+      var $image = $('.custom-logo-image');
       var $title = $('.site-title');
       var $subtitle = $('.site-subtitle');
       var $logoLineTop = $('.logo-line-before i');
@@ -240,16 +253,26 @@ $(document).ready(function() {
         };
       }
 
+      function pushImageToSequence() {
+        sequence.push({
+          e: $image,
+          p: {opacity: 1, top: 0},
+          o: {duration: 200}
+        });
+      }
+
       NexT.utils.isMist() && hasElement([$logoLineTop, $logoLineBottom])
       && sequence.push(
         getMistLineSettings($logoLineTop, '100%'),
         getMistLineSettings($logoLineBottom, '-100%')
       );
 
+      NexT.utils.isMuse() && hasElement($image) && pushImageToSequence();
+
       hasElement($title) && sequence.push({
         e: $title,
         p: {opacity: 1, top: 0},
-        o: { duration: 200 }
+        o: {duration: 200}
       });
 
       hasElement($subtitle) && sequence.push({
@@ -257,6 +280,8 @@ $(document).ready(function() {
         p: {opacity: 1, top: 0},
         o: {duration: 200}
       });
+
+      (NexT.utils.isPisces() || NexT.utils.isGemini()) && hasElement($image) && pushImageToSequence();
 
       if (CONFIG.motion.async) {
         integrator.next();
